@@ -15,7 +15,6 @@ const numMap = {
   12: "twelve",
   13: "thirteen",
   14: "fourteen",
-  15: "fifteen",
   16: "sixteen",
   17: "seventeen",
   18: "eighteen",
@@ -40,37 +39,32 @@ function convertTimeToWords(time) {
   if (time === "12:00") {
     return "midday";
   }
+
   const [hour, min] = time.split(":");
+  const parsedHour = parseInt(hour, 10);
+  const parsedMin = parseInt(min, 10);
+  let strHour = numMap[parsedHour];
 
-  const strHour = numMap[hour];
-
-  if (min == "00") {
+  if (parsedMin === 0) {
     return `${strHour} o'clock`;
   }
-
-  const parsedMin = parseInt(min, 10);
-
-  if (parsedMin <= 30) {
-    if (parsedMin === 30) {
-      return `half past ${strHour}`;
-    }
-
-    if (parsedMin === 15) {
-      return `quarter past ${strHour}`;
-    }
-
-    return `${numMap[min]} past ${strHour}`;
+  // past
+  if (parsedMin === 15) {
+    return `quarter past ${strHour}`;
   }
-
-  const parsedHour = parseInt(hour, 10) + 1;
-  const strParsedHour = numMap[parsedHour];
-
+  if (parsedMin === 30) {
+    return `half past ${strHour}`;
+  }
+  if (parsedMin < 30) {
+    return `${numMap[parsedMin]} past ${strHour}`;
+  }
+  // to
+  strHour = numMap[parsedHour + 1];
+  if (parsedMin === 45) {
+    return `quarter to ${strHour}`;
+  }
   if (parsedMin > 30) {
-    if (parsedMin === 45) {
-      return `quarter to ${strParsedHour}`;
-    }
-
-    return `${numMap[60 - parsedMin]} to ${strParsedHour}`;
+    return `${numMap[60 - parsedMin]} to ${strHour}`;
   }
 
   return "";
